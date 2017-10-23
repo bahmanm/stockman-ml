@@ -19,12 +19,14 @@ Homepage: https://github.com/bahmanm/stockman-ml
 Library stockman_lib
   Path: src
   Modules: Stockman
+  BuildDepends: batteries (= 2.7.0)
 
 Executable stockman
   Path: src
   MainIs: stockman.ml
   Install: false
   CompiledObject: best
+  BuildDepends: stockman_lib
 
 Executable test_stockman
   Path: test
