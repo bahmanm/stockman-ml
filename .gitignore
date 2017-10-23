@@ -12,10 +12,8 @@ _build/
 *.native
 setup.data
 setup.log
-.merlin
 *\#*
 *~*
-.projectile
 *.mldylib
 *.mllib
 META
