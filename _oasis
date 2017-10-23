@@ -1,0 +1,41 @@
+OASISFormat: 0.4
+Name: stockman
+Version: 1.0~master
+Authors: Bahman Movaqar <Bahman@BahmanM.com>
+Maintainers: Bahman Movaqar <Bahman@BahmanM.com>
+Copyrights: (C) 20017 Bahman Movaqar
+LicenseFile: LICENSE
+License: Apache-2
+BuildTools: ocamlbuild
+Plugins: META (0.4), DevFiles (0.4)
+
+Synopsis: stockman
+Description:
+  A project which starts from very humble beginnings and gradually evolves into
+  a glorious Sales, Procurement and Inventory management software.
+
+Homepage: https://github.com/bahmanm/stockman-ml
+
+Library stockman_lib
+  Path: src
+  Modules: Stockman
+
+Executable stockman
+  Path: src
+  MainIs: stockman.ml
+  Install: false
+  CompiledObject: best
+
+Executable test_stockman
+  Path: test
+  MainIs: test_stockman.ml
+  Install: false
+  CompiledObject: best
+  Build$: flag(tests)
+  BuildDepends: stockman_lib, oUnit (>= 2.0.0)
+
+Test "test_all"
+  Run$: flag(tests)
+  Command: $test_stockman
+  WorkingDirectory: test
+  TestTools: oasis, test_stockman
