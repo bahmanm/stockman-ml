@@ -1,5 +1,6 @@
 S src/**
+S test/**
 
-PKG ounit, batteries
+PKG oUnit batteries
 
-B _build/src/**
+B _build/**
