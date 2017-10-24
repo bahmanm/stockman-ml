@@ -12,7 +12,7 @@ let test_product_db_add ctx =
   assert_equal 2 (R.size db);;
       
 let test_product_db_empty ctx =
-  assert_equal 0 0;;
+  assert_equal 1 (R.size R.empty);;
 
 let suite =
   "suite">:::
