@@ -1,10 +1,23 @@
 open OUnit2;;
 
-let test_dumbest_ever ctx = assert_equal 1 1;;
+module R = Stockman.Products.Repo;;
+module T = Stockman.Products;;
+  
+let test_product_db_add ctx =
+  let db = R.empty in
+  assert_equal 0 (R.size db);
+  let db = db |> R.add new T.product in
+  assert_equal 1 (R.size db);
+  let db = db |> R.add new T.product in
+  assert_equal 2 (R.size db);;
+      
+let test_product_db_empty ctx =
+  assert_equal 0 0;;
 
 let suite =
   "suite">:::
-    ["test_dumbest_ever">:: test_dumbest_ever];;
+    ["test_product_db_add">:: test_product_db_add;
+     "test_product_db_empty">:: test_product_db_empty];;
 
 let () =
   run_test_tt_main suite
