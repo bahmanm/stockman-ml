@@ -46,6 +46,12 @@ let test_etl_product_of_string_invalid_input ctx =
 let test_etl_repo_of_file_valid_input ctx =
   let repo = E.repo_of_file "res/wp1-products__all-valid.csv" "#" ',' 1 in
   assert_equal 4 (R.size repo);;
+
+let test_etl_repo_of_file_invalid_input ctx =
+  let repo1 = E.repo_of_file "res/wp1-products__lots-of-invalid-rows.csv" "#" ';' 1 in
+  assert_equal 1 (R.size repo1);
+  let repo2 = E.repo_of_file "res/wp1-products__lots-of-invalid-rows.csv" "#" '~' 1 in
+  assert_equal true (R.is_empty repo2);;
       
 let suite_product =
   "suite_product">:::
@@ -56,7 +62,8 @@ let suite_etl =
   "suite_etl">:::
   ["test_etl_product_of_string_valid_input">:: test_etl_product_of_string_valid_input;
    "test_etl_product_of_string_invalid_input">:: test_etl_product_of_string_invalid_input;
-   "test_etl_repo_of_file_valid_input">:: test_etl_repo_of_file_valid_input];;
+   "test_etl_repo_of_file_valid_input">:: test_etl_repo_of_file_valid_input;
+   "test_etl_repo_of_file_invalid_input">:: test_etl_repo_of_file_invalid_input];;
 
 let () =
   run_test_tt_main suite_product;
