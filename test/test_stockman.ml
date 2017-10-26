@@ -42,13 +42,22 @@ let test_etl_product_of_string_invalid_input ctx =
   match E.product_of_string '-' "" with
   | Error msg -> assert_equal msg "Empty row"
   | _ -> assert_equal 0 1;;
-                
-let suite =
-  "suite">:::
+
+let test_etl_repo_of_file_valid_input ctx =
+  let repo = E.repo_of_file "res/wp1-products__all-valid.csv" "#" ',' 1 in
+  assert_equal 4 (R.size repo);;
+      
+let suite_product =
+  "suite_product">:::
   ["test_product_db_add">:: test_product_db_add;
-   "test_product_db_empty">:: test_product_db_empty;
-   "test_etl_product_of_string_valid_input">:: test_etl_product_of_string_valid_input;
-   "test_etl_product_of_string_invalid_input">:: test_etl_product_of_string_invalid_input];;
+   "test_product_db_empty">:: test_product_db_empty];;
+
+let suite_etl =
+  "suite_etl">:::
+  ["test_etl_product_of_string_valid_input">:: test_etl_product_of_string_valid_input;
+   "test_etl_product_of_string_invalid_input">:: test_etl_product_of_string_invalid_input;
+   "test_etl_repo_of_file_valid_input">:: test_etl_repo_of_file_valid_input];;
 
 let () =
-  run_test_tt_main suite
+  run_test_tt_main suite_product;
+  run_test_tt_main suite_etl;;
