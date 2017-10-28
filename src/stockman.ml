@@ -17,12 +17,13 @@ module Products = struct
 end
 (******************************************************************************)
 
-(** Represents the ETL module for importing products. In reality this
+(** Represents the functionality for loading "delimiter separated values"
+    formats for importing products from plain-text files. In reality this
     should be a very thin and abstract layer simply running the ad-hoc
     'converter' functions passed to it, e.g. `product_of_string`. However,
     due the very simple nature of WP1, those ad-hoc functions are part of
     the module. *)
-module Etl = struct
+module DsvLoader = struct
   (** Number of fields in each row. *)
   let n_fields = 2
 
