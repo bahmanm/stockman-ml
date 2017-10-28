@@ -1,21 +1,21 @@
 open OUnit2;;
 open Batteries;;
 
-module R = Stockman.Products.Repo;;
-module T = Stockman.Products;;
-module E = Stockman.Products.Etl;;
+module D = Stockman.Products.Db;;
+module P = Stockman.Products;;
+module E = Stockman.Etl;;
 module C = Stockman.Cmd;;
   
 let test_product_db_add ctx =
-  let db = R.empty in
-  assert_equal 0 (R.size db);
-  let db = db |> R.add new T.product in
-  assert_equal 1 (R.size db);
-  let db = db |> R.add new T.product in
-  assert_equal 2 (R.size db);;
+  let db = D.empty in
+  assert_equal 0 (D.size db);
+  let db = db |> D.add { P.name="foo"; P.qty=1 } in
+  assert_equal 1 (D.size db);
+  let db = db |> D.add { P.name="bar"; P.qty=1 } in
+  assert_equal 2 (D.size db);;
       
 let test_product_db_empty ctx =
-  assert_equal 0 (R.size R.empty);;
+  assert_equal 0 (D.size D.empty);;
 
 let suite_product =
   "suite_product">:::
@@ -25,17 +25,14 @@ let suite_product =
 (******************************************************************************)
 let test_etl_product_of_string_valid_input ctx =
   let () = match E.product_of_string ',' "p1,10" with
-    | Ok p -> assert_equal "p1" p#get_name;
-      assert_equal 10 p#get_qty;
-    | _ -> assert_equal 0 1 in
+    | Ok { P.name="p1"; P.qty=10 } -> assert_equal 1 1
+    | _ -> assert_failure "shouldn't happen" in
   let () = match E.product_of_string ';' "p1 ;10 " with
-    | Ok p -> assert_equal "p1" p#get_name;
-      assert_equal 10 p#get_qty;
-    | _ -> assert_equal 0 1 in
+    | Ok { P.name="p1"; P.qty=10 } -> assert_equal 1 1
+    | _ -> assert_failure "shouldn't happen" in
   match E.product_of_string '-' "   p1 -  10 " with
-  | Ok p -> assert_equal "p1" p#get_name;
-      assert_equal 10 p#get_qty
-  | _ -> assert_equal 0 1;;
+    | Ok { P.name="p1"; P.qty=10 } -> assert_equal 1 1
+    | _ -> assert_failure "shouldn't happen"
 
 let test_etl_product_of_string_invalid_input ctx =
   let () = match E.product_of_string ',' ",10" with
@@ -51,22 +48,22 @@ let test_etl_product_of_string_invalid_input ctx =
   | Error msg -> assert_equal msg "Empty row"
   | _ -> assert_equal 0 1;;
 
-let test_etl_repo_of_file_valid_input ctx =
-  let repo = E.repo_of_file "res/wp1-products__all-valid.csv" "#" ',' 1 in
-  assert_equal 4 (R.size repo);;
+let test_etl_db_of_file_valid_input ctx =
+  let db = E.db_of_file "res/wp1-products__all-valid.csv" "#" ',' 1 in
+  assert_equal 4 (D.size db);;
 
-let test_etl_repo_of_file_invalid_input ctx =
-  let repo1 = E.repo_of_file "res/wp1-products__lots-of-invalid-rows.csv" "#" ';' 1 in
-  assert_equal 1 (R.size repo1);
-  let repo2 = E.repo_of_file "res/wp1-products__lots-of-invalid-rows.csv" "#" '~' 1 in
-  assert_equal true (R.is_empty repo2);;
+let test_etl_db_of_file_invalid_input ctx =
+  let db1 = E.db_of_file "res/wp1-products__lots-of-invalid-rows.csv" "#" ';' 1 in
+  assert_equal 1 (D.size db1);
+  let db2 = E.db_of_file "res/wp1-products__lots-of-invalid-rows.csv" "#" '~' 1 in
+  assert_equal true (D.is_empty db2);;
 
 let suite_etl =
   "suite_etl">:::
   ["test_etl_product_of_string_valid_input">:: test_etl_product_of_string_valid_input;
    "test_etl_product_of_string_invalid_input">:: test_etl_product_of_string_invalid_input;
-   "test_etl_repo_of_file_valid_input">:: test_etl_repo_of_file_valid_input;
-   "test_etl_repo_of_file_invalid_input">:: test_etl_repo_of_file_invalid_input];;
+   "test_etl_db_of_file_valid_input">:: test_etl_db_of_file_valid_input;
+   "test_etl_db_of_file_invalid_input">:: test_etl_db_of_file_invalid_input];;
 
 (******************************************************************************)
 let test_cmd_all_options_present ctx =
