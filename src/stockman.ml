@@ -37,15 +37,14 @@ module Etl = struct
                                  BatList.at fields 0 |> is_valid_name &&
                                  BatList.at fields 1 |> is_valid_qty in
     if String.length str = 0 then
-      Error("Empty row")
+      Bad "Empty row"
     else
       let fields = get_fields str in
       if is_valid_fields fields then
         Ok { Products.name = BatList.at fields 0;
              Products.qty = BatList.at fields 1 |> int_of_string }
       else
-        (* TODO Convert to BatResult *)
-        Error("Invalid row: " ^ str)
+        Bad ("Invalid row: " ^ str)
 
   (** Loads the contents of the file at `path` as a repository of `products`.
       The first `n_header` lines of the file are ignored. If a line starts
@@ -77,9 +76,9 @@ module Cmd = struct
     match cmd_opts.file_path with
     | Some _ ->
       (match cmd_opts.field_delim with
-       | Some _ -> Ok(cmd_opts)
-       | _ -> Bad("field delimiter cannot be empty."))
-    | _ -> Bad("file path cannot be empty.")
+       | Some _ -> Ok cmd_opts
+       | _ -> Bad "field delimiter cannot be empty.")
+    | _ -> Bad "file path cannot be empty."
 
   (** Parses the [argv] as command line arguments. *)
   let parse argv =
@@ -87,9 +86,9 @@ module Cmd = struct
       match cmd_opts.file_path with
       | Some _ ->
         (match cmd_opts.field_delim with
-         | Some _ -> Ok(cmd_opts)
-         | _ -> Bad("field delimiter cannot be empty."))
-      | _ -> Bad("file path cannot be empty.") in
+         | Some _ -> Ok cmd_opts
+         | _ -> Bad "field delimiter cannot be empty.")
+      | _ -> Bad "file path cannot be empty." in
     let cmd_opts = { file_path = None; field_delim = Some ',' } in
     let file_path_spec =
       ("-f",

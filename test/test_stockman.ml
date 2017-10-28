@@ -36,16 +36,16 @@ let test_etl_product_of_string_valid_input ctx =
 
 let test_etl_product_of_string_invalid_input ctx =
   let () = match E.product_of_string ',' ",10" with
-    | Error msg -> assert_equal msg "Invalid row: ,10"
+    | Bad msg -> assert_equal msg "Invalid row: ,10"
     | _ -> assert_equal 0 1 in
   let () = match E.product_of_string ';' "p1, " with
-    | Error msg -> assert_equal msg "Invalid row: p1, "
+    | Bad msg -> assert_equal msg "Invalid row: p1, "
     | _ -> assert_equal 0 1 in
   let () = match E.product_of_string ',' "p1" with
-    | Error msg -> assert_equal msg "Invalid row: p1"
+    | Bad msg -> assert_equal msg "Invalid row: p1"
     | _ -> assert_equal 0 1 in
   match E.product_of_string '-' "" with
-  | Error msg -> assert_equal msg "Empty row"
+  | Bad msg -> assert_equal msg "Empty row"
   | _ -> assert_equal 0 1;;
 
 let test_etl_db_of_file_valid_input ctx =
