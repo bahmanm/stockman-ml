@@ -3,6 +3,7 @@ open OUnit2;;
 module R = Stockman.Products.Repo;;
 module T = Stockman.Products;;
 module E = Stockman.Products.Etl;;
+module C = Stockman.Cmd;;
   
 let test_product_db_add ctx =
   let db = R.empty in
@@ -15,6 +16,12 @@ let test_product_db_add ctx =
 let test_product_db_empty ctx =
   assert_equal 0 (R.size R.empty);;
 
+let suite_product =
+  "suite_product">:::
+  ["test_product_db_add">:: test_product_db_add;
+   "test_product_db_empty">:: test_product_db_empty];;
+
+(******************************************************************************)
 let test_etl_product_of_string_valid_input ctx =
   let () = match E.product_of_string ',' "p1,10" with
     | Ok p -> assert_equal "p1" p#get_name;
@@ -52,11 +59,6 @@ let test_etl_repo_of_file_invalid_input ctx =
   assert_equal 1 (R.size repo1);
   let repo2 = E.repo_of_file "res/wp1-products__lots-of-invalid-rows.csv" "#" '~' 1 in
   assert_equal true (R.is_empty repo2);;
-      
-let suite_product =
-  "suite_product">:::
-  ["test_product_db_add">:: test_product_db_add;
-   "test_product_db_empty">:: test_product_db_empty];;
 
 let suite_etl =
   "suite_etl">:::
@@ -65,6 +67,33 @@ let suite_etl =
    "test_etl_repo_of_file_valid_input">:: test_etl_repo_of_file_valid_input;
    "test_etl_repo_of_file_invalid_input">:: test_etl_repo_of_file_invalid_input];;
 
+(******************************************************************************)
+let test_cmd_all_options_present ctx =
+  let argv = [|"app_name"; "-f"; "/home/bahman/t.tmp"; "-d"; ";"|] in
+  let opts = C.parse argv in
+  match opts.C.file_path with
+  | Some s -> assert_equal s "/home/bahman/t.tmp"
+  | None -> ignore (assert_failure "shouldn't happen");
+  match opts.C.field_delim with
+  | Some c -> assert_equal c ';'
+  | None -> assert_failure "shouldn't happen";;
+
+let test_cmd_only_file_path_options_present ctx =
+  let argv = [|"app_name"; "-f"; "/home/bahman/t.tmp"|] in
+  let opts = C.parse argv in
+  match opts.C.file_path with
+  | Some s -> assert_equal s "/home/bahman/t.tmp"
+  | None -> ignore (assert_failure "shouldn't happen");
+  match opts.C.field_delim with
+  | Some c -> assert_equal c ','
+  | None -> assert_failure "shouldn't happen";;
+
+let suite_cmd =
+  "suite_cmd">:::
+  ["test_cmd_all_options_present">:: test_cmd_all_options_present;
+   "test_cmd_only_file_path_options_present">:: test_cmd_only_file_path_options_present];;
+
 let () =
   run_test_tt_main suite_product;
-  run_test_tt_main suite_etl;;
+  run_test_tt_main suite_etl;
+  run_test_tt_main suite_cmd;;

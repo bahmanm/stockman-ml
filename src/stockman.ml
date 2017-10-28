@@ -79,3 +79,21 @@ module Products = struct
 
 end
 
+module Cmd = struct
+  type cmd_opts_t = { mutable file_path : string option;
+                      mutable field_delim : char option }
+
+  let parse argv =
+    let cmd_opts = { file_path = None; field_delim = Some ',' } in
+    let file_path_spec = ("-f",
+                          Arg.String (fun arg -> cmd_opts.file_path <- Some arg),
+                          "path to file containing the records") in
+    let field_delim_spec = ("-d",
+                            Arg.String (fun arg -> cmd_opts.field_delim <- (BatString.enum arg |> BatEnum.get)),
+                            "field delimiter character") in
+    let specs = [file_path_spec; field_delim_spec] in
+    let anon_f s = () in
+    Arg.current := 0;
+    Arg.parse_argv argv specs anon_f "Stockman";
+    cmd_opts
+end
