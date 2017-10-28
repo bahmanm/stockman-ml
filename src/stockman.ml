@@ -3,7 +3,6 @@ open Batteries;;
 
 (** Contains all the types and operations related to "product". *)
 module Products = struct
-
   (** A [product] entity with [name] and [qty] fields. *)
   type product = { name : string; qty : int }
 
@@ -18,7 +17,7 @@ module Products = struct
 end
 (******************************************************************************)
 
-(** Represents the ETL module for im/exporting products. In reality this
+(** Represents the ETL module for importing products. In reality this
     should be a very thin and abstract layer simply running the ad-hoc
     'converter' functions passed to it, e.g. `product_of_string`. However,
     due the very simple nature of WP1, those ad-hoc functions are part of
