@@ -1,4 +1,5 @@
 open OUnit2;;
+open Batteries;;
 
 module R = Stockman.Products.Repo;;
 module T = Stockman.Products;;
@@ -70,23 +71,19 @@ let suite_etl =
 (******************************************************************************)
 let test_cmd_all_options_present ctx =
   let argv = [|"app_name"; "-f"; "/home/bahman/t.tmp"; "-d"; ";"|] in
-  let opts = C.parse argv in
-  match opts.C.file_path with
-  | Some s -> assert_equal s "/home/bahman/t.tmp"
-  | None -> ignore (assert_failure "shouldn't happen");
-  match opts.C.field_delim with
-  | Some c -> assert_equal c ';'
-  | None -> assert_failure "shouldn't happen";;
+  match C.parse argv with
+  | Ok opts ->
+    assert_equal (Some ';') opts.C.field_delim;
+    assert_equal (Some "/home/bahman/t.tmp") opts.C.file_path
+  | Bad _ -> assert_failure "shouldn't happen";;
 
 let test_cmd_only_file_path_options_present ctx =
   let argv = [|"app_name"; "-f"; "/home/bahman/t.tmp"|] in
-  let opts = C.parse argv in
-  match opts.C.file_path with
-  | Some s -> assert_equal s "/home/bahman/t.tmp"
-  | None -> ignore (assert_failure "shouldn't happen");
-  match opts.C.field_delim with
-  | Some c -> assert_equal c ','
-  | None -> assert_failure "shouldn't happen";;
+  match C.parse argv with
+  | Ok opts ->
+    assert_equal (Some ',') opts.C.field_delim;
+    assert_equal (Some "/home/bahman/t.tmp") opts.C.file_path
+  | Bad _ -> assert_failure "shouldn't happen";;
 
 let suite_cmd =
   "suite_cmd">:::
