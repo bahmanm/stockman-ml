@@ -18,7 +18,7 @@ Homepage: https://github.com/bahmanm/stockman-ml
 
 Library stockman_lib
   Path: src
-  Modules: Stockman,Product
+  Modules: Stockman, Product, DsvLoader
   BuildDepends: batteries (= 2.7.0)
 
 Executable stockman
