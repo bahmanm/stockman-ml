@@ -1,8 +1,8 @@
 open OUnit2;;
 open Batteries;;
 
-module D = Stockman.Products.Db;;
-module P = Stockman.Products;;
+module D = Product.Db;;
+module P = Product;;
 module E = Stockman.DsvLoader;;
 module C = Stockman.Cmd;;
 module TF = Stockman.TableFormatter;;

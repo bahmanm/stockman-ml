@@ -1,22 +1,6 @@
 (* Author: Bahman Movaqar <Bahman@BahmanM.com> *)
 open Batteries;;
 
-(** Contains all the types and operations related to "product". *)
-module Products = struct
-  (** A [product] entity with [name] and [qty] fields. *)
-  type product = { name : string; qty : int }
-
-  (** Represents a database for the products. *)
-  module Db = struct
-    type db_t = product list
-    let add product db = BatList.cons product db
-    let size db = BatList.length db
-    let is_empty db = BatList.is_empty db
-    let empty : db_t = []
-  end
-end
-(******************************************************************************)
-
 (** Represents the functionality for loading "delimiter separated values"
     formats for importing products from plain-text files. In reality this
     should be a very thin and abstract layer simply running the ad-hoc
@@ -42,8 +26,8 @@ module DsvLoader = struct
     else
       let fields = get_fields str in
       if is_valid_fields fields then
-        Ok { Products.name = BatList.at fields 0;
-             Products.qty = BatList.at fields 1 |> int_of_string }
+        Ok { Product.name = BatList.at fields 0;
+             qty = BatList.at fields 1 |> int_of_string }
       else
         Bad ("Invalid row: " ^ str)
 
@@ -62,13 +46,13 @@ module DsvLoader = struct
         else
           None
       )
-    |> BatEnum.fold (fun db p -> Products.Db.add p db ) Products.Db.empty
+    |> BatEnum.fold (fun db p -> Product.Db.add p db ) Product.Db.empty
 end  
 (******************************************************************************)
 module TableFormatter = struct
   let string_of_product p =
     BatPrintf.sprintf
-      "| %-48s | %-24d |" (BatString.left p.Products.name 48)  p.Products.qty
+      "| %-48s | %-24d |" (BatString.left p.Product.name 48)  p.Product.qty
 
   let header = "
 +==================================================+==========================+
@@ -138,7 +122,7 @@ let () =
   match Cmd.parse Sys.argv with
   | Ok { Cmd.file_path = Some file_path; field_delim = Some field_delim } -> 
     DsvLoader.db_of_file file_path "#" field_delim 1
-    |> BatList.sort (fun p1 p2 -> - compare (p1.Products.qty) (p2.Products.qty))
+    |> BatList.sort (fun p1 p2 -> - compare (p1.Product.qty) (p2.Product.qty))
     |> TableFormatter.format
     |> print_endline
   | Ok { Cmd.file_path = _; field_delim = _ } ->
