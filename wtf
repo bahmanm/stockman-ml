@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+BUILD="ocaml setup.ml -build"
+TEST="ocaml setup.ml -test"
+NOTIF="notify-send -c im -t 50 -i dialog-warning"
+
+function build_and_test() {
+  eval $BUILD
+  if [ "$?" -ne "0" ]; then
+    eval "$NOTIF 'Build failed'"
+  else
+    eval $TEST
+    if [ "$?" -ne "0" ]; then
+      eval "$NOTIF 'Test failed'"
+    fi
+  fi
+}
+
+while [ true ]; do
+  inotifywait -qrm -e modify,move,create,delete ./src ./test |
+  build_and_test
+done
