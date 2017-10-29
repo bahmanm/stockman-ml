@@ -65,6 +65,33 @@ module DsvLoader = struct
     |> BatEnum.fold (fun db p -> Products.Db.add p db ) Products.Db.empty
 end  
 (******************************************************************************)
+module TableFormatter = struct
+  let string_of_product p =
+    BatPrintf.sprintf
+      "| %-48s | %-24d |" (BatString.left p.Products.name 48)  p.Products.qty
+
+  let header = "
++==================================================+==========================+
+|         Product Name                             |      Available Qty       |
++==================================================+==========================+
+"
+  let footer = "
++==================================================+==========================+
+"
+
+  let row_sep = "
++--------------------------------------------------+--------------------------+
+"
+
+  let format product_list =
+    let rows product_list =
+      BatList.map string_of_product product_list
+      |> BatString.concat row_sep in
+    BatString.concat "" [header; (rows product_list); footer]
+    
+end
+
+(******************************************************************************)
 
 (** Collection of operations and types on command line arguements. *)
 module Cmd = struct
