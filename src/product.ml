@@ -6,7 +6,7 @@ type product = { name : string; qty : int }
 
 (** What follows is a bit bigger than the scope of WP1, but I just couldn't
     help but doing it the proper way (as you can see through revision history,
-    the previous versions of [Db] have all been but dump and not actually doing
+    the previous versions of [Db] have all been but dumb and not actually doing
     anything --not even encapsulating the fact that internally they were using
     [list] to get things done).
     
