@@ -45,4 +45,4 @@ let db_of_file path comment_str delimiter n_header =
       else
         None
     )
-  |> BatEnum.fold (fun db p -> Product.Db.add p db ) Product.Db.empty
+  |> BatEnum.fold (fun db p -> Product.Db.add p db) Product.Db.empty

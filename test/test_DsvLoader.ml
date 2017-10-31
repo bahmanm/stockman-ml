@@ -1,10 +1,10 @@
 (* Author: Bahman Movaqar <Bahman@BahmanM.com> *)
-open OUnit2;;
-open Batteries;;
+open OUnit2
+open Batteries
 
-module D = Product.Db;;
-module P = Product;;
-module E = DsvLoader;;
+module P = Product
+module D = Product.Db
+module E = DsvLoader
 
 let test_dsv_product_of_string_valid_input ctx =
   let () = match E.product_of_string ',' "p1,10" with
