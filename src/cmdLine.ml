@@ -1,40 +1,56 @@
 (* Author: Bahman Movaqar <Bahman@BahmanM.com> *)
 open Batteries
 
-(** Stockman options *)
-type cmd_opts_t = { mutable file_path : string option;
-                    mutable field_delim : char option }
+module CmdLine : sig
 
-(** Validates the options. *)
-let validate_opts cmd_opts =
-  match cmd_opts.file_path with
-  | Some _ ->
-    (match cmd_opts.field_delim with
-     | Some _ -> Ok cmd_opts
-     | _ -> Bad "field delimiter cannot be empty.")
-  | _ -> Bad "file path cannot be empty."
+  type cmd_opts_t = {
+    file_path : string;
+    field_delim : char;
+  }
+  (** Stockman command line options *)    
 
-(** Parses the [argv] as command line arguments. *)
-let parse argv =
-  let validate_opts cmd_opts =
-    match cmd_opts.file_path with
-    | Some _ ->
-      (match cmd_opts.field_delim with
-       | Some _ -> Ok cmd_opts
-       | _ -> Bad "field delimiter cannot be empty.")
-    | _ -> Bad "file path cannot be empty." in
-  let cmd_opts = { file_path = None; field_delim = Some ',' } in
-  let file_path_spec =
+  val parse : string array -> (cmd_opts_t, string) result
+  (** [parse argv] parses the command line arguments [argv]. *)
+
+end = struct
+
+  type cmd_opts_t = {
+    file_path : string;
+    field_delim : char;
+  }
+
+  type cmd_opts_wip_t = {
+    mutable wip_file_path : string option;
+    mutable wip_field_delim : char option;
+  }
+  (* command line options - during parsing and validation *)
+
+  let specs opts = [
     ("-f",
-     Arg.String (fun arg -> cmd_opts.file_path <- Some arg),
-     "path to file containing the records") in
-  let field_delim_spec =
+     Arg.String (fun arg -> opts.wip_file_path <- Some arg),
+     "path to file containing the records");
     ("-d",
      Arg.String (fun arg ->
-         cmd_opts.field_delim <- (BatString.enum arg |> BatEnum.get)),
-     "field delimiter character") in
-  let specs = [file_path_spec; field_delim_spec] in
-  let anon_f s = () in
-  Arg.current := 0;
-  Arg.parse_argv argv specs anon_f "Stockman";
-  validate_opts cmd_opts
+         opts.wip_field_delim <- (BatString.enum arg |> BatEnum.get)),
+     "field delimiter character")
+  ]
+
+  let validate_opts cmd_opts =
+    match cmd_opts.wip_file_path with
+    | Some file_path ->
+      (match cmd_opts.wip_field_delim with
+       | Some field_delim -> Ok {
+           file_path = file_path;
+           field_delim = field_delim
+         }
+       | _ -> Bad "field delimiter cannot be empty.")
+    | _ -> Bad "file path cannot be empty."
+  
+  let parse argv =
+    let cmd_opts = { wip_file_path = None; wip_field_delim = Some ',' } in
+    let anon_f s = () in
+    Arg.current := 0;
+    Arg.parse_argv argv (specs cmd_opts) anon_f "Stockman";
+    validate_opts cmd_opts
+
+end
