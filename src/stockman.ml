@@ -17,4 +17,5 @@ let () =
     |> TableFormatter.format
     |> print_endline
   | Bad s ->
-    print_endline s;;
+    print_endline s
+

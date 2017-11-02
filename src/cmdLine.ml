@@ -49,6 +49,14 @@ end = struct
      "comment marker")
   ]
 
+  let empty_wip_cmd_opts =
+    {
+      wip_file_path = None;
+      wip_field_delim = Some ',';
+      wip_comment_marker = Some "#";
+      wip_n_header = Some 1
+    }
+
   let validate_opts cmd_opts =
     match cmd_opts with
     | { wip_file_path = None; _ } ->
@@ -70,17 +78,18 @@ end = struct
         file_path = file_path; field_delim = field_delim;
         n_header = n_header; comment_marker = comment_marker
       }
-  
+
   let parse argv =
-    let cmd_opts = {
-      wip_file_path = None;
-      wip_field_delim = Some ',';
-      wip_comment_marker = Some "#";
-      wip_n_header = Some 1
-    } in
+    let cmd_opts = empty_wip_cmd_opts in
+    let specs = specs cmd_opts in
+    let usage_msg = (Arg.usage_string specs "Stockman WP1") in
     let anon_f s = () in
     Arg.current := 0;
-    Arg.parse_argv argv (specs cmd_opts) anon_f "Stockman";
-    validate_opts cmd_opts
-
+    try 
+      Arg.parse_argv argv specs anon_f "Stockman WP1";
+      match validate_opts cmd_opts with
+      | Ok opts -> Ok opts
+      | Bad s -> Bad (usage_msg ^ "\n\n" ^ s)
+    with
+      Arg.Help _ | Arg.Bad _ -> Bad usage_msg
 end
