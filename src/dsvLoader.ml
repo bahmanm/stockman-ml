@@ -13,13 +13,18 @@ let n_fields = 2
 (** Loads a `product` from a given string where fields are delimited by
     `delimiter`. *)
 let product_of_string delimiter str =
-  let is_valid_name s = String.length s > 0 in
-  let is_valid_qty s = Str.string_match (Str.regexp "^[0-9]+$") s 0 in
-  let get_fields s = s |> String.split_on_char delimiter
-                     |> BatList.map String.trim in
-  let is_valid_fields fields = BatList.length fields = n_fields &&
-                               BatList.at fields 0 |> is_valid_name &&
-                               BatList.at fields 1 |> is_valid_qty in
+  let is_valid_name s =
+    String.length s > 0 in
+  let is_valid_qty s =
+    Str.string_match (Str.regexp "^[0-9]+$") s 0 in
+  let get_fields s =
+    s
+    |> String.split_on_char delimiter
+    |> BatList.map String.trim in
+  let is_valid_fields fields =
+    BatList.length fields = n_fields &&
+    BatList.at fields 0 |> is_valid_name &&
+    BatList.at fields 1 |> is_valid_qty in
   if String.length str = 0 then
     Bad "Empty row"
   else
