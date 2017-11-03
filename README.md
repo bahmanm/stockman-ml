@@ -16,4 +16,4 @@ It's been a long while since I last coded in OCaml and so this repository is the
 The releases will be of the format `vX.0` where `X` denotes the work package `X` (not surprisingly!).
 
 # Work Packages #
-* (WIP) 1.0 (see `/docs/wp01.md`)
+* (DONE) 1.0 (see `/docs/wp01.md`)
