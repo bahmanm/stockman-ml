@@ -16,17 +16,31 @@ Description:
 
 Homepage: https://github.com/bahmanm/stockman-ml
 
+################################# db ###########################################
+Library db
+  Path: src/db
+  Modules: Db
+  BuildDepends: batteries (= 2.7.0)
+
+Executable test_db
+  Path: test/db
+  MainIs: test_db.ml
+  Install: false
+  CompiledObject: best  
+  Build$: flag(tests)
+  BuildDepends: db, oUnit (>= 2.0.0)
+
+Test test_db
+  Run$: flag(tests)
+  Command: $test_db
+  WorkingDirectory: test/db
+  TestTools: oasis, test_db  
+
+############################## stockman tests ##################################
 Library stockman_lib
   Path: src
   Modules: Stockman, Product, DsvLoader, TableFormatter, CmdLine
-  BuildDepends: batteries (= 2.7.0)
-
-Executable stockman
-  Path: src
-  MainIs: stockman.ml
-  Install: false
-  CompiledObject: best
-  BuildDepends: stockman_lib
+  BuildDepends: db, batteries (= 2.7.0)
 
 Executable test_stockman
   Path: test
@@ -36,8 +50,16 @@ Executable test_stockman
   Build$: flag(tests)
   BuildDepends: stockman_lib, oUnit (>= 2.0.0)
 
-Test "test_all"
+Test test_stockman
   Run$: flag(tests)
   Command: $test_stockman
   WorkingDirectory: test
   TestTools: oasis, test_stockman
+
+################################# stockman #####################################
+Executable stockman
+  Path: src
+  MainIs: stockman.ml
+  Install: false
+  CompiledObject: best
+  BuildDepends: db, batteries (= 2.7.0)
