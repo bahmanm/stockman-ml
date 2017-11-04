@@ -5,6 +5,12 @@ module type DbElemType = sig
   
   (** The type of the database elements. *)
   type t
+
+  (** The type of the id field of the elements. *)
+  type id_t
+
+  (** Retrieves the id of an element. *)
+  val id : t -> id_t
     
 end
 
@@ -14,9 +20,12 @@ module type DbType = sig
   (** The type of the database elements. *)
   type elt_t
 
+  (** The type of the id field of the elements. *)
+  type id_t
+
   (** The type of database. *)
   type t
-
+  
   (** The empty database. *)
   val empty : t
 
@@ -42,17 +51,25 @@ module type DbType = sig
       same order as [db].*)
   val to_list : t -> elt_t list
 
+  val id : elt_t -> id_t
+
 end
 
 (** Functor for creating a database. *)
-module Make(ElemType : DbElemType) :
-  DbType with type elt_t = ElemType.t
+module Make(Elem : DbElemType) :
+  DbType with type elt_t = Elem.t and type id_t = Elem.id_t
 = struct
 
-  type elt_t = ElemType.t
+  type elt_t = Elem.t
+                 
+  type id_t = Elem.id_t
+                
   type t = | Empty
            | Db of elt_t list
 
+  let id e =
+    Elem.id e
+      
   let empty =
     Empty
     
