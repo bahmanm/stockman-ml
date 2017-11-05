@@ -7,6 +7,8 @@ module Db = Db.Make(struct
     type t = foo
     type id_t = int
     let id e = e.x
+    let validate e =
+      if e.x >= 0 then Ok e else Bad "x"
   end)
 
 let test_save ctx =
@@ -16,6 +18,12 @@ let test_save ctx =
   assert_equal 1 (Db.size db);
   let db = db |> Db.save { x=20; y=1 } in
   assert_equal 2 (Db.size db)
+
+let test_save_exn ctx =
+  try
+    let db = Db.empty |> Db.save { x = -1; y=10 } in
+    assert_failure "shouldn't happen"
+  with Db.InvalidField (e, f) -> ()
 
 let test_empty ctx =
   assert_equal 0 (Db.size Db.empty)
@@ -73,6 +81,7 @@ let test_get_not_found ctx =
 let suite_db =
   "suite_db">:::
   ["test_save">:: test_save;
+   "test_save_exn">:: test_save_exn;
    "test_empty">:: test_empty;
    "test_remove">:: test_delete;
    "test_remove_empty_db">:: test_delete_empty_db;

@@ -9,8 +9,14 @@ module type DbElemType = sig
   (** The type of the id field of the elements. *)
   type id_t
 
-  (** Retrieves the id of an element. *)
+  (** [id e] retrieves the id of an element. *)
   val id : t -> id_t
+
+  (** [validate e] formally validates [e]. In case of invalidity, returns the
+      name of the field violating constraints.
+      This method should strictly do *formal* validation and should not rely
+      on any information outside [e] itself. *)
+  val validate : t -> (t, string) Batteries.result
     
 end
 
@@ -25,6 +31,10 @@ module type DbType = sig
 
   (** The type of database. *)
   type t
+
+  (** [InvalidField (element, field_name)] denotes an exception where the
+      the value of [field_name] in [element] violates a constraint. *)
+  exception InvalidField of (elt_t * string)
   
   (** The empty database. *)
   val empty : t
@@ -62,13 +72,16 @@ end
 module Make(Elem : DbElemType) :
   DbType with type elt_t = Elem.t and type id_t = Elem.id_t
 = struct
-
+  open Batteries
+  
   type elt_t = Elem.t
                  
   type id_t = Elem.id_t
                 
   type t = | Empty
            | Db of elt_t list
+
+  exception InvalidField of (elt_t * string)
 
   let id e =
     Elem.id e
@@ -82,9 +95,12 @@ module Make(Elem : DbElemType) :
     | Db ll -> BatList.length ll
                  
   let save x db =
-    match db with
-    | Empty -> Db [x]
-    | Db ll -> Db (BatList.cons x ll)
+    match Elem.validate x with
+    | Ok _ ->
+      (match db with
+       | Empty -> Db [x]
+       | Db ll -> Db (BatList.cons x ll))
+    | Bad field -> raise (InvalidField (x, field))
 
   let delete id_value db =
     match db with

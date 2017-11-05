@@ -3,7 +3,9 @@
 
 (** Product database *)
 module ProductDb = Db.Make(struct
-    type t = StkDomain.Product.product
+    module Product = StkDomain.Product
+    type t = Product.product
     type id_t = string
-    let id p = p.StkDomain.Product.name
+    let id p = p.Product.name
+    let validate p = Product.validate p
   end)
