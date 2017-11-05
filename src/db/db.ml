@@ -29,9 +29,6 @@ module type DbType = sig
   (** The empty database. *)
   val empty : t
 
-  (** Tests whether a database is empty or not. *)
-  val is_empty : t -> bool
-
   (** [size db] returns the number of elements of [db]. *)
   val size : t -> int
 
@@ -81,11 +78,6 @@ module Make(Elem : DbElemType) :
       
   let empty =
     Empty
-    
-  let is_empty db =
-    match db with
-    | Empty -> true
-    | _ -> false
       
   let size db =
     match db with
