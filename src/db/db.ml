@@ -39,6 +39,10 @@ module type DbType = sig
       plus [x]. *)
   val add : elt_t -> t -> t
 
+  (** [remove id_value db] returns a database containing all elements of [db]
+      except the one with id [id_value]. *)
+  val remove : id_t -> t -> t
+
   (** [map_to_list f db] returns a [list] containing all elements of [db], after
       applying [f] to each element. *)
   val map_to_list : (elt_t -> 'b) -> t -> 'b list
@@ -87,6 +91,11 @@ module Make(Elem : DbElemType) :
     match db with
     | Empty -> Db [x]
     | Db ll -> Db (BatList.cons x ll)
+
+  let remove id_value db =
+    match db with
+    | Empty -> db
+    | Db ll -> Db (BatList.filter (fun e -> (id e) != id_value) ll) 
 
   let map_to_list f db =
     match db with
