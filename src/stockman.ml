@@ -3,6 +3,7 @@ open Batteries
 
 module C = CmdLine.CmdLine
 module Dsv = StkDsv.Product
+module DsvParams = StkDsv.Params
 module Product = StkDomain.Product
 module Tabulator = StkTabulator.Product
 
@@ -14,7 +15,12 @@ let () =
       n_header = n_header;
       comment_marker = comment_marker
     } -> 
-    Dsv.db_of_file file_path comment_marker field_delim n_header
+    Dsv.load_file {
+      DsvParams.path=file_path;
+      DsvParams.comment_str=comment_marker;
+      DsvParams.delimiter=field_delim;
+      DsvParams.n_header=n_header
+    }
     |> BatEnum.fold
       (fun db p -> Ctx.ProductDb.add p db)
       Ctx.ProductDb.empty
