@@ -32,29 +32,29 @@ let test_product_of_string_invalid_input ctx =
   | _ -> assert_equal 0 1;;
 
 let test_load_file_valid_input ctx =
-  let db = Dsv.load_file {
+  let records = Dsv.load_file {
       Params.path="res/products__all-valid.csv";
       Params.comment_str="#";
       Params.delimiter=',';
       Params.n_header=1
     } in
-  assert_equal 4 (BatEnum.count db);;
+  assert_equal 4 (BatEnum.count records);;
 
 let test_load_file_invalid_input ctx =
-  let db1 = Dsv.load_file {
+  let records1 = Dsv.load_file {
       Params.path="res/products__lots-of-invalid-rows.csv";
       Params.comment_str="#";
       Params.delimiter=';';
       Params.n_header=1
     } in
-  assert_equal 1 (BatEnum.count db1);
-  let db2 = Dsv.load_file {
-      Params.path="res/products__lots-of-invalid-rows.csv";
+  assert_equal 1 (BatEnum.count records1);
+  let records2 = Dsv.load_file {
+      Params.path="res/products__all-invalid.csv";
       Params.comment_str="#";
       Params.delimiter='~';
       Params.n_header=1
     } in
-  assert_equal true (BatEnum.is_empty db2);;
+  assert_equal true (BatEnum.is_empty records2);;
 
 let suite_dsv =
   "suite_dsv">:::
