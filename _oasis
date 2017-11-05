@@ -19,7 +19,7 @@ Homepage: https://github.com/bahmanm/stockman-ml
 ################################ domain ########################################
 Library domain
   Path: src/domain
-  Modules: Product
+  Modules: StkDomain
   BuildDepends: batteries (= 2.7.0)
 
 Executable test_domain
@@ -28,13 +28,33 @@ Executable test_domain
   Install: false
   CompiledObject: best  
   Build$: flag(tests)
-  BuildDepends: oUnit (>= 2.0.0)
+  BuildDepends: domain, oUnit (>= 2.0.0), batteries (= 2.7.0)
 
 Test test_domain
   Run$: flag(tests)
   Command: $test_domain
   WorkingDirectory: test/domain
   TestTools: oasis, test_domain
+
+################################## dsv #########################################
+Library dsv
+  Path: src/dsv
+  Modules: StkDsv
+  BuildDepends: domain, batteries (= 2.7.0)
+
+Executable test_dsv
+  Path: test/dsv
+  MainIs: test_dsv.ml
+  Install: false
+  CompiledObject: best  
+  Build$: flag(tests)
+  BuildDepends: dsv, domain, oUnit (>= 2.0.0), batteries (= 2.7.0)
+
+Test test_dsv
+  Run$: flag(tests)
+  Command: $test_dsv
+  WorkingDirectory: test/dsv
+  TestTools: oasis, test_dsv
 
 ################################# db ###########################################
 Library db
@@ -59,8 +79,8 @@ Test test_db
 ############################## stockman tests ##################################
 Library stockman_lib
   Path: src
-  Modules: Stockman, DsvLoader, TableFormatter, CmdLine
-  BuildDepends: db, domain, batteries (= 2.7.0)
+  Modules: Stockman, TableFormatter, CmdLine
+  BuildDepends: db, domain, dsv, batteries (= 2.7.0)
 
 Executable test_stockman
   Path: test
@@ -82,4 +102,4 @@ Executable stockman
   MainIs: stockman.ml
   Install: false
   CompiledObject: best
-  BuildDepends: db, domain, batteries (= 2.7.0)
+  BuildDepends: db, domain, dsv, batteries (= 2.7.0)

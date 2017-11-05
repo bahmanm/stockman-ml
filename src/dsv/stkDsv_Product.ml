@@ -7,6 +7,8 @@
     the module. *)
 open Batteries
 
+module Product = StkDomain.Product
+
 (** Number of fields in each row. *)
 let n_fields = 2
 
@@ -48,6 +50,4 @@ let db_of_file path comment_str delimiter n_header =
         | Ok p -> Some p
         | _ -> None
       else
-        None
-    )
-  |> BatEnum.fold (fun db p -> Ctx.ProductDb.add p db) Ctx.ProductDb.empty
+        None)

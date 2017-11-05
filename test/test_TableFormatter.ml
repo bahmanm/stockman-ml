@@ -1,7 +1,7 @@
 open OUnit2
 open Batteries
 
-module P = Product
+module P = StkDomain.Product
 module TF = TableFormatter
 
 let test_table_formatter_single_row ctx =

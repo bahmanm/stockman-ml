@@ -1,6 +1,8 @@
 (* Author: Bahman Movaqar <Bahman@BahmanM.com> *)
 open Batteries
 
+module Product = StkDomain.Product
+
 let string_of_product p =
   BatPrintf.sprintf
     "| %-48s | %-24d |" (BatString.left p.Product.name 48)  p.Product.qty
