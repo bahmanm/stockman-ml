@@ -4,6 +4,7 @@ open Batteries
 module C = CmdLine.CmdLine
 module Dsv = StkDsv.Product
 module Product = StkDomain.Product
+module Tabulator = StkTabulator.Product
 
 let () =
   match C.parse Sys.argv with
@@ -20,7 +21,7 @@ let () =
     |> Ctx.ProductDb.sort
       (fun p1 p2 -> - compare (p1.Product.qty) (p2.Product.qty))
     |> Ctx.ProductDb.to_list
-    |> TableFormatter.format
+    |> Tabulator.format
     |> print_endline
   | Bad s ->
     print_endline s

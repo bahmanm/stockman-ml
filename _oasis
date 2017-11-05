@@ -76,11 +76,31 @@ Test test_db
   WorkingDirectory: test/db
   TestTools: oasis, test_db
 
+################################ tabulator #####################################
+Library tabulator
+  Path: src/tabulator
+  Modules: StkTabulator
+  BuildDepends: domain, batteries (= 2.7.0)
+
+Executable test_tabulator
+  Path: test/tabulator
+  MainIs: test_tabulator.ml
+  Install: false
+  CompiledObject: best  
+  Build$: flag(tests)
+  BuildDepends: tabulator, domain, oUnit (>= 2.0.0)
+
+Test test_tabulator
+  Run$: flag(tests)
+  Command: $test_tabulator
+  WorkingDirectory: test/tabulator
+  TestTools: oasis, test_tabulator
+
 ############################## stockman tests ##################################
 Library stockman_lib
   Path: src
-  Modules: Stockman, TableFormatter, CmdLine
-  BuildDepends: db, domain, dsv, batteries (= 2.7.0)
+  Modules: Stockman, CmdLine
+  BuildDepends: db, tabulator, domain, dsv, batteries (= 2.7.0)
 
 Executable test_stockman
   Path: test
@@ -102,4 +122,4 @@ Executable stockman
   MainIs: stockman.ml
   Install: false
   CompiledObject: best
-  BuildDepends: db, domain, dsv, batteries (= 2.7.0)
+  BuildDepends: db, domain, tabulator, dsv, batteries (= 2.7.0)
