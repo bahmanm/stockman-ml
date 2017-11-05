@@ -106,7 +106,7 @@ Test test_tabulator
 Library service
   Path: src/service
   Modules: StkService
-  BuildDepends: domain, db, batteries (= 2.7.0)
+  BuildDepends: domain, db, domain_db, batteries (= 2.7.0)
 
 Executable test_service
   Path: test/service
@@ -114,7 +114,7 @@ Executable test_service
   Install: false
   CompiledObject: best  
   Build$: flag(tests)
-  BuildDepends: domain, db, service, oUnit (>= 2.0.0)
+  BuildDepends: domain, db, domain_db, service, oUnit (>= 2.0.0)
 
 Test test_service
   Run$: flag(tests)

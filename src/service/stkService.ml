@@ -1,3 +1,3 @@
 (* Author: Bahman Movaqar <Bahman@BahmanM.com> *)
 
-module Product = StkService_Product
+module Inventory = StkService_Inventory
