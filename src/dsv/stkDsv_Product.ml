@@ -20,7 +20,7 @@ let is_valid_qty s =
   Str.string_match (Str.regexp "^[0-9]+$") s 0
 
 let is_valid_amt s =
-  Str.string_match (Str.regexp "^[0-9]+\.[0-9][0-9]$") s 0
+  Str.string_match (Str.regexp "^[0-9]+\\.[0-9][0-9]$") s 0
 
 let get_fields delimiter s =
   s
