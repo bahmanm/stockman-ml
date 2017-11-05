@@ -30,5 +30,5 @@ let suite_db =
    "test_id">:: test_id]
 
 let () =
-  print_endline "test_db.suite_db";
+  print_endline "█ test_db.suite_db";
   run_test_tt_main suite_db

@@ -74,5 +74,5 @@ let suite_tabulator =
    "test_multiple_rows">:: test_multiple_rows];;
 
 let () =
-  print_endline "test_tabulator.suite_tabulator";
+  print_endline "█ test_tabulator.suite_tabulator";
   run_test_tt_main suite_tabulator;

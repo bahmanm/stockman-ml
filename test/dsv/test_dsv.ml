@@ -64,5 +64,5 @@ let suite_dsv =
    "test_load_file_invalid_input">:: test_load_file_invalid_input];;
 
 let () =
-  print_endline "test_dsv.suite_dsv";
+  print_endline "█ test_dsv.suite_dsv";
   run_test_tt_main suite_dsv;

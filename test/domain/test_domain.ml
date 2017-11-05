@@ -9,5 +9,5 @@ let suite_domain =
   ["test_dummy">:: test_dummy]
 
 let () =
-  print_endline "test_domain.suite_domain";
+  print_endline "█ test_domain.suite_domain";
   run_test_tt_main suite_domain
