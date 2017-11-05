@@ -6,7 +6,7 @@ module T = StkTabulator.Product
 
 let test_single_row ctx =
   let product_list = [
-    { P.name = "P1-2334"; P.qty = 12 }
+    { P.name = "P1-2334"; P.qty = 12; P.amt = 0.0 }
   ] in
   let expected_result =
     "
@@ -23,7 +23,7 @@ let test_single_row ctx =
 
 let test_long_name ctx =
   let product_list = [
-    { P.name = "P-0123456789-0123456789-0123456789-0123456789-0123456789-0123456789"; P.qty = 12 }
+    { P.name = "P-0123456789-0123456789-0123456789-0123456789-0123456789-0123456789"; P.qty = 12; P.amt=0.0 }
   ] in
   let expected_result =
     "
@@ -40,11 +40,11 @@ let test_long_name ctx =
 
 let test_multiple_rows ctx =
   let product_list = [
-    { P.name = "P1-2334"; P.qty = 12 };
-    { P.name = "AA90 (23.45)"; P.qty = 606 };
-    { P.name = "P1-2337"; P.qty = 3811 };
-    { P.name = "CVCD Lorem Ipsum"; P.qty = 8 };
-    { P.name = "G2"; P.qty = 75 };
+    { P.name = "P1-2334"; P.qty = 12; P.amt=0.0 };
+    { P.name = "AA90 (23.45)"; P.qty = 606; P.amt=0.0 };
+    { P.name = "P1-2337"; P.qty = 3811; P.amt=0.0 };
+    { P.name = "CVCD Lorem Ipsum"; P.qty = 8; P.amt=0.0 };
+    { P.name = "G2"; P.qty = 75; P.amt=0.0 };
   ] in
   let expected_result =
     "
