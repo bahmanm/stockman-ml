@@ -3,5 +3,6 @@
 (** Product domain entity. *)
 type product = {
   name : string;
-  qty : int
+  qty : int;
+  amt : float;
 }
