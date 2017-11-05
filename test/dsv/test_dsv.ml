@@ -33,7 +33,7 @@ let test_product_of_string_invalid_input ctx =
 
 let test_load_file_valid_input ctx =
   let db = Dsv.load_file {
-      Params.path="res/wp1-products__all-valid.csv";
+      Params.path="res/products__all-valid.csv";
       Params.comment_str="#";
       Params.delimiter=',';
       Params.n_header=1
@@ -42,14 +42,14 @@ let test_load_file_valid_input ctx =
 
 let test_load_file_invalid_input ctx =
   let db1 = Dsv.load_file {
-      Params.path="res/wp1-products__lots-of-invalid-rows.csv";
+      Params.path="res/products__lots-of-invalid-rows.csv";
       Params.comment_str="#";
       Params.delimiter=';';
       Params.n_header=1
     } in
   assert_equal 1 (BatEnum.count db1);
   let db2 = Dsv.load_file {
-      Params.path="res/wp1-products__lots-of-invalid-rows.csv";
+      Params.path="res/products__lots-of-invalid-rows.csv";
       Params.comment_str="#";
       Params.delimiter='~';
       Params.n_header=1
