@@ -96,6 +96,26 @@ Test test_tabulator
   WorkingDirectory: test/tabulator
   TestTools: oasis, test_tabulator
 
+################################## service #####################################
+Library service
+  Path: src/service
+  Modules: StkService
+  BuildDepends: domain, db, batteries (= 2.7.0)
+
+Executable test_service
+  Path: test/service
+  MainIs: test_service.ml
+  Install: false
+  CompiledObject: best  
+  Build$: flag(tests)
+  BuildDepends: domain, db, service, oUnit (>= 2.0.0)
+
+Test test_service
+  Run$: flag(tests)
+  Command: $test_service
+  WorkingDirectory: test/service
+  TestTools: oasis, test_service
+
 ############################## stockman tests ##################################
 Library stockman_lib
   Path: src
