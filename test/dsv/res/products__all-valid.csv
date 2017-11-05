@@ -1,9 +1,9 @@
-name,qty
+name,qty,amt
 # nunc dimittis
-p1,    100
+p1,    100,100.00
 # lorem ipsum dolor
-   p2  ,23
-  p3 ,    90
+   p2  ,23,    46.46
+  p3 ,    90,    270.90
 # aloha
-p4,70
+p4,70,280.70
 # sit amet
