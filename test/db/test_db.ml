@@ -9,12 +9,12 @@ module Db = Db.Make(struct
     let id e = e.x
   end)
 
-let test_add ctx =
+let test_save ctx =
   let db = Db.empty in
   assert_equal 0 (Db.size db);
-  let db = db |> Db.add { x=10; y=0 } in
+  let db = db |> Db.save { x=10; y=0 } in
   assert_equal 1 (Db.size db);
-  let db = db |> Db.add { x=20; y=1 } in
+  let db = db |> Db.save { x=20; y=1 } in
   assert_equal 2 (Db.size db)
 
 let test_empty ctx =
@@ -23,29 +23,29 @@ let test_empty ctx =
 let test_id ctx =
   assert_equal 10 (Db.id { x=10; y=0 })
 
-let test_remove ctx =
+let test_delete ctx =
   let db1 = Db.empty
-            |> Db.add {x=10; y=0} in
+            |> Db.save {x=10; y=0} in
   assert_equal (Db.size db1) 1;
-  let db2 = Db.remove 10 db1 in
+  let db2 = Db.delete 10 db1 in
   assert_equal (Db.size db2) 0
 
-let test_remove_empty_db ctx =
+let test_delete_empty_db ctx =
   assert_equal
     0
     (Db.empty
-     |> Db.add {x=10; y=0}
-     |> Db.remove 10
-     |> Db.remove 10
+     |> Db.save {x=10; y=0}
+     |> Db.delete 10
+     |> Db.delete 10
      |> Db.size)
 
 let suite_db =
   "suite_db">:::
-  ["test_add">:: test_add;
+  ["test_save">:: test_save;
    "test_empty">:: test_empty;
    "test_id">:: test_id;
-   "test_remove">:: test_remove;
-   "test_remove_empty_db">:: test_remove_empty_db]
+   "test_remove">:: test_delete;
+   "test_remove_empty_db">:: test_delete_empty_db]
 
 let () =
   print_endline "█ test_db.suite_db";

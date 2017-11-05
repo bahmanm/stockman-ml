@@ -35,13 +35,14 @@ module type DbType = sig
   (** [size db] returns the number of elements of [db]. *)
   val size : t -> int
 
-  (** [add x db] returns a database containing all elements of [db],
-      plus [x]. *)
-  val add : elt_t -> t -> t
+  (** [save x db] returns a database containing all elements of [db],
+      plus [x]. If an element with id equal to that of [x] exists, it will
+      replaced by [x]. *)
+  val save : elt_t -> t -> t
 
-  (** [remove id_value db] returns a database containing all elements of [db]
+  (** [delete id_value db] returns a database containing all elements of [db]
       except the one with id [id_value]. *)
-  val remove : id_t -> t -> t
+  val delete : id_t -> t -> t
 
   (** [map_to_list f db] returns a [list] containing all elements of [db], after
       applying [f] to each element. *)
@@ -87,12 +88,12 @@ module Make(Elem : DbElemType) :
     | Empty -> 0
     | Db ll -> BatList.length ll
                  
-  let add x db =
+  let save x db =
     match db with
     | Empty -> Db [x]
     | Db ll -> Db (BatList.cons x ll)
 
-  let remove id_value db =
+  let delete id_value db =
     match db with
     | Empty -> db
     | Db ll -> Db (BatList.filter (fun e -> (id e) != id_value) ll) 
