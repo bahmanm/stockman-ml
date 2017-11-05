@@ -76,6 +76,12 @@ Test test_db
   WorkingDirectory: test/db
   TestTools: oasis, test_db
 
+############################### domain db ######################################
+Library domain_db
+  Path: src/domain_db
+  Modules: StkDomainDb
+  BuildDepends: db, domain, batteries (= 2.7.0)
+
 ################################ tabulator #####################################
 Library tabulator
   Path: src/tabulator
@@ -120,7 +126,7 @@ Test test_service
 Library stockman_lib
   Path: src
   Modules: Stockman, CmdLine
-  BuildDepends: db, tabulator, domain, dsv, batteries (= 2.7.0)
+  BuildDepends: db, tabulator, domain, domain_db, dsv, batteries (= 2.7.0)
 
 Executable test_stockman
   Path: test
@@ -142,4 +148,4 @@ Executable stockman
   MainIs: stockman.ml
   Install: false
   CompiledObject: best
-  BuildDepends: db, domain, tabulator, dsv, batteries (= 2.7.0)
+  BuildDepends: db, domain, domain_db, tabulator, dsv, batteries (= 2.7.0)

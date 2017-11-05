@@ -6,6 +6,7 @@ module Dsv = StkDsv.Product
 module DsvParams = StkDsv.Params
 module Product = StkDomain.Product
 module Tabulator = StkTabulator.Product
+module ProductDb = StkDomainDb.ProductDb
 
 let () =
   match C.parse Sys.argv with
@@ -22,11 +23,11 @@ let () =
       DsvParams.n_header=n_header
     }
     |> BatEnum.fold
-      (fun db p -> Ctx.ProductDb.add p db)
-      Ctx.ProductDb.empty
-    |> Ctx.ProductDb.sort
+      (fun db p -> ProductDb.add p db)
+      ProductDb.empty
+    |> ProductDb.sort
       (fun p1 p2 -> - compare (p1.Product.qty) (p2.Product.qty))
-    |> Ctx.ProductDb.to_list
+    |> ProductDb.to_list
     |> Tabulator.format
     |> print_endline
   | Bad s ->

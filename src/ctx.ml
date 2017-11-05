@@ -6,9 +6,3 @@
 
 module Product = StkDomain.Product
 
-(** Product database *)
-module ProductDb = Db.Make(struct
-    type t = Product.product
-    type id_t = string
-    let id p = p.Product.name
-  end)
