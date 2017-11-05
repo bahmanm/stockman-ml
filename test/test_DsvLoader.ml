@@ -3,7 +3,7 @@ open OUnit2
 open Batteries
 
 module P = Product
-module D = Product.Db
+module D = Ctx.ProductDb
 module E = DsvLoader
 
 let test_dsv_product_of_string_valid_input ctx =

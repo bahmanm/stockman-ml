@@ -12,8 +12,9 @@ let () =
       comment_marker = comment_marker
     } -> 
     DsvLoader.db_of_file file_path comment_marker field_delim n_header
-    |> Product.Db.sort (fun p1 p2 -> - compare (p1.Product.qty) (p2.Product.qty))
-    |> Product.Db.to_list
+    |> Ctx.ProductDb.sort
+      (fun p1 p2 -> - compare (p1.Product.qty) (p2.Product.qty))
+    |> Ctx.ProductDb.to_list
     |> TableFormatter.format
     |> print_endline
   | Bad s ->

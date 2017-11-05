@@ -16,6 +16,26 @@ Description:
 
 Homepage: https://github.com/bahmanm/stockman-ml
 
+################################ domain ########################################
+Library domain
+  Path: src/domain
+  Modules: Product
+  BuildDepends: batteries (= 2.7.0)
+
+Executable test_domain
+  Path: test/domain
+  MainIs: test_domain.ml
+  Install: false
+  CompiledObject: best  
+  Build$: flag(tests)
+  BuildDepends: oUnit (>= 2.0.0)
+
+Test test_domain
+  Run$: flag(tests)
+  Command: $test_domain
+  WorkingDirectory: test/domain
+  TestTools: oasis, test_domain
+
 ################################# db ###########################################
 Library db
   Path: src/db
@@ -34,13 +54,13 @@ Test test_db
   Run$: flag(tests)
   Command: $test_db
   WorkingDirectory: test/db
-  TestTools: oasis, test_db  
+  TestTools: oasis, test_db
 
 ############################## stockman tests ##################################
 Library stockman_lib
   Path: src
-  Modules: Stockman, Product, DsvLoader, TableFormatter, CmdLine
-  BuildDepends: db, batteries (= 2.7.0)
+  Modules: Stockman, DsvLoader, TableFormatter, CmdLine
+  BuildDepends: db, domain, batteries (= 2.7.0)
 
 Executable test_stockman
   Path: test
@@ -62,4 +82,4 @@ Executable stockman
   MainIs: stockman.ml
   Install: false
   CompiledObject: best
-  BuildDepends: db, batteries (= 2.7.0)
+  BuildDepends: db, domain, batteries (= 2.7.0)

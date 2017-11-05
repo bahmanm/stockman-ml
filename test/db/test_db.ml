@@ -1,3 +1,4 @@
+(* Author: Bahman Movaqar <Bahman@BahmanM.com> *)
 open OUnit2
 open Batteries
 
@@ -30,4 +31,4 @@ let suite_db =
 
 let () =
   print_endline "test_db.suite_db";
-  run_test_tt_main suite_db;
+  run_test_tt_main suite_db
