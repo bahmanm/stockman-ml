@@ -39,13 +39,27 @@ let test_delete_empty_db ctx =
      |> Db.delete 10
      |> Db.size)
 
+let test_contains ctx =
+  let db1 =
+    Db.empty
+    |> Db.save {x=10; y=0}
+    |> Db.save {x=8; y=2}
+    |> Db.save {x=6; y=4} in
+  assert_equal true (Db.contains 8 db1);
+  assert_equal false (Db.contains 20 db1)
+
+let test_contains_empty ctx =
+  assert_equal false (Db.empty |> Db.contains 10)
+
 let suite_db =
   "suite_db">:::
   ["test_save">:: test_save;
    "test_empty">:: test_empty;
    "test_id">:: test_id;
    "test_remove">:: test_delete;
-   "test_remove_empty_db">:: test_delete_empty_db]
+   "test_remove_empty_db">:: test_delete_empty_db;
+   "test_contains">:: test_contains;
+   "test_contains_empty">:: test_contains_empty]
 
 let () =
   print_endline "█ test_db.suite_db";

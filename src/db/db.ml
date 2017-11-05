@@ -44,6 +44,10 @@ module type DbType = sig
       except the one with id [id_value]. *)
   val delete : id_t -> t -> t
 
+  (** [exists id_value db] returns true if [db] contains an element with id
+      equal to [id_value], false otherwise. *)
+  val contains : id_t -> t -> bool
+
   (** [map_to_list f db] returns a [list] containing all elements of [db], after
       applying [f] to each element. *)
   val map_to_list : (elt_t -> 'b) -> t -> 'b list
@@ -96,7 +100,12 @@ module Make(Elem : DbElemType) :
   let delete id_value db =
     match db with
     | Empty -> db
-    | Db ll -> Db (BatList.filter (fun e -> (id e) != id_value) ll) 
+    | Db ll -> Db (BatList.filter (fun e -> (id e) != id_value) ll)
+
+  let contains id_value db =
+    match db with
+    | Empty -> false
+    | Db ll -> BatList.exists (fun e -> (id e) = id_value) ll
 
   let map_to_list f db =
     match db with
