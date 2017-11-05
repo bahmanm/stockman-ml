@@ -25,9 +25,9 @@ let () =
     |> BatEnum.fold
       (fun db p -> ProductDb.save p db)
       ProductDb.empty
-    |> ProductDb.sort
+    |> ProductDb.all
+    |> BatList.sort
       (fun p1 p2 -> - compare (p1.Product.qty) (p2.Product.qty))
-    |> ProductDb.to_list
     |> Tabulator.format
     |> print_endline
   | Bad s ->

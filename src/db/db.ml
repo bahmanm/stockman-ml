@@ -29,9 +29,8 @@ module type DbType = sig
   (** The empty database. *)
   val empty : t
 
-  (** [size db] returns the number of elements of [db]. *)
-  val size : t -> int
-
+  (***** Ops *****)
+  
   (** [save x db] returns a database containing all elements of [db],
       plus [x]. If an element with id equal to that of [x] exists, it will
       replaced by [x]. *)
@@ -41,23 +40,21 @@ module type DbType = sig
       except the one with id [id_value]. *)
   val delete : id_t -> t -> t
 
+  (***** Query *****)
+    
   (** [exists id_value db] returns true if [db] contains an element with id
       equal to [id_value], false otherwise. *)
   val contains : id_t -> t -> bool
 
-  (** [map_to_list f db] returns a [list] containing all elements of [db], after
-      applying [f] to each element. *)
-  val map_to_list : (elt_t -> 'b) -> t -> 'b list
+  (** [get id_value db] returns the element whose id value matches
+      [id_value]. *)
+  val get : id_t -> t -> elt_t option
 
-  (** [sort cmp db] returns a db containing all elements of [db] ordered using
-      [cmp].*)
-  val sort : (elt_t -> elt_t -> int) -> t -> t
+  (** [all db] returns all elements of [db] as a [list]. *)
+  val all : t -> elt_t list
 
-  (** [to_list db] returns a list containing all elements of [db] in the exact
-      same order as [db].*)
-  val to_list : t -> elt_t list
-
-  val id : elt_t -> id_t
+  (** [size db] returns the number of elements of [db]. *)
+  val size : t -> int
 
 end
 
@@ -99,19 +96,19 @@ module Make(Elem : DbElemType) :
     | Empty -> false
     | Db ll -> BatList.exists (fun e -> (id e) = id_value) ll
 
-  let map_to_list f db =
+  let get id_value db =
     match db with
-    | Empty -> []
-    | Db ll -> BatList.map f ll
+    | Empty -> None
+    | Db ll ->
+      try
+        Some (BatList.find
+                (fun e -> (id e) = id_value)
+                ll)
+      with Not_found -> None
 
-  let sort cmp db =
-    match db with
-    | Empty -> db
-    | Db ll -> Db (BatList.sort cmp ll)
-
-  let to_list db =
+  let all db =
     match db with
     | Empty -> []
     | Db ll -> ll
-                 
+  
 end

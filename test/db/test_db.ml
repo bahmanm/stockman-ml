@@ -20,9 +20,6 @@ let test_save ctx =
 let test_empty ctx =
   assert_equal 0 (Db.size Db.empty)
 
-let test_id ctx =
-  assert_equal 10 (Db.id { x=10; y=0 })
-
 let test_delete ctx =
   let db1 = Db.empty
             |> Db.save {x=10; y=0} in
@@ -51,15 +48,39 @@ let test_contains ctx =
 let test_contains_empty ctx =
   assert_equal false (Db.empty |> Db.contains 10)
 
+let test_get ctx =
+  let db1 =
+    Db.empty
+    |> Db.save {x=10; y=0}
+    |> Db.save {x=8; y=2}
+    |> Db.save {x=6; y=4} in
+  assert_equal (Db.get 10 db1) (Some {x=10; y=0});
+  assert_equal (Db.get 6 db1) (Some {x=6; y=4});
+  assert_equal (Db.get 8 db1) (Some {x=8; y=2})
+
+let test_get_empty ctx =
+  assert_equal None (Db.get 10 Db.empty)
+
+let test_get_not_found ctx =
+  let db1 =
+    Db.empty
+    |> Db.save {x=10; y=0}
+    |> Db.save {x=8; y=2}
+    |> Db.save {x=6; y=4} in
+  assert_equal None (Db.get 12 db1);
+  assert_equal None (Db.get 0 db1)
+
 let suite_db =
   "suite_db">:::
   ["test_save">:: test_save;
    "test_empty">:: test_empty;
-   "test_id">:: test_id;
    "test_remove">:: test_delete;
    "test_remove_empty_db">:: test_delete_empty_db;
    "test_contains">:: test_contains;
-   "test_contains_empty">:: test_contains_empty]
+   "test_contains_empty">:: test_contains_empty;
+   "test_get">:: test_get;
+   "test_get_not_found">:: test_get_not_found;
+   "test_get_empty">:: test_get_empty]
 
 let () =
   print_endline "█ test_db.suite_db";
