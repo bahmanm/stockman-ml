@@ -4,5 +4,5 @@
 type product = {
   name : string;
   qty : int;
-  amt : float;
+  amt : float
 }
