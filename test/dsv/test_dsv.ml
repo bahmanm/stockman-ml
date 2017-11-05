@@ -7,14 +7,14 @@ module Dsv = StkDsv.Product
 module Params = StkDsv.Params
 
 let test_product_of_string_valid_input ctx =
-  let () = match Dsv.product_of_string ',' "p1,10" with
-    | Ok { P.name="p1"; P.qty=10 } -> assert_equal 1 1
+  let () = match Dsv.product_of_string ',' "p1,10,10.00" with
+    | Ok { P.name="p1"; P.qty=10; P.amt=10.0 } -> assert_equal 1 1
     | _ -> assert_failure "shouldn't happen" in
-  let () = match Dsv.product_of_string ';' "p1 ;10 " with
-    | Ok { P.name="p1"; P.qty=10 } -> assert_equal 1 1
+  let () = match Dsv.product_of_string ';' "p1 ;10; 10.00 " with
+    | Ok { P.name="p1"; P.qty=10; P.amt=10.0 } -> assert_equal 1 1
     | _ -> assert_failure "shouldn't happen" in
-  match Dsv.product_of_string '-' "   p1 -  10 " with
-  | Ok { P.name="p1"; P.qty=10 } -> assert_equal 1 1
+  match Dsv.product_of_string '-' "   p1 -  10- 10.00 " with
+  | Ok { P.name="p1"; P.qty=10; P.amt=10.0 } -> assert_equal 1 1
   | _ -> assert_failure "shouldn't happen"
 
 let test_product_of_string_invalid_input ctx =
