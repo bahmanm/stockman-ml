@@ -44,7 +44,13 @@ let validate pi =
              0)
     then
       Bad "date"
-    else if pi.amt < 0.0 then
+    else if
+      let sum_lines = BatList.fold_left
+          (fun acc line -> acc +. line.price *. (float_of_int line.qty))
+          0.0
+          pi.lines in
+      pi.amt < 0.0 || pi.amt != sum_lines
+    then
       Bad "amt"
     else
       Ok pi
