@@ -49,7 +49,7 @@ let validate pi =
           (fun acc line -> acc +. line.price *. (float_of_int line.qty))
           0.0
           pi.lines in
-      pi.amt < 0.0 || pi.amt != sum_lines
+      pi.amt < 0.0 || pi.amt <> sum_lines
     then
       Bad "amt"
     else
