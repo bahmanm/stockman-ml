@@ -54,4 +54,3 @@ let validate pi =
       Bad "amt"
     else
       Ok pi
-      

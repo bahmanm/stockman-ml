@@ -96,7 +96,7 @@ let test_validate_invalid_header_vendor ctx =
 
 let test_validate_invalid_header_amt ctx =
   let inv = {
-    Invoice.doc_no = "pi123"; date = "2018/0101"; vendor = "v1";
+    Invoice.doc_no = "pi123"; date = "2018/01/01"; vendor = "v1";
     amt = -10.0; lines = []
   } in
   match Invoice.validate inv with
