@@ -20,7 +20,7 @@ Homepage: https://github.com/bahmanm/stockman-ml
 Library domain
   Path: src/domain
   Modules: StkDomain
-  BuildDepends: batteries (= 2.7.0)
+  BuildDepends: batteries (>= 2.7.0)
 
 Executable test_domain
   Path: test/domain
@@ -28,7 +28,7 @@ Executable test_domain
   Install: false
   CompiledObject: best  
   Build$: flag(tests)
-  BuildDepends: domain, oUnit (>= 2.0.0), batteries (= 2.7.0)
+  BuildDepends: domain, oUnit (>= 2.0.0), batteries (>= 2.7.0)
 
 Test test_domain
   Run$: flag(tests)
@@ -40,7 +40,7 @@ Test test_domain
 Library dsv
   Path: src/dsv
   Modules: StkDsv
-  BuildDepends: domain, batteries (= 2.7.0)
+  BuildDepends: domain, batteries (>= 2.7.0)
 
 Executable test_dsv
   Path: test/dsv
@@ -48,7 +48,7 @@ Executable test_dsv
   Install: false
   CompiledObject: best  
   Build$: flag(tests)
-  BuildDepends: dsv, domain, oUnit (>= 2.0.0), batteries (= 2.7.0)
+  BuildDepends: dsv, domain, oUnit (>= 2.0.0), batteries (>= 2.7.0)
 
 Test test_dsv
   Run$: flag(tests)
@@ -60,7 +60,7 @@ Test test_dsv
 Library db
   Path: src/db
   Modules: Db
-  BuildDepends: batteries (= 2.7.0)
+  BuildDepends: batteries (>= 2.7.0)
 
 Executable test_db
   Path: test/db
@@ -80,13 +80,13 @@ Test test_db
 Library domain_db
   Path: src/domain_db
   Modules: StkDomainDb
-  BuildDepends: db, domain, batteries (= 2.7.0)
+  BuildDepends: db, domain, batteries (>= 2.7.0)
 
 ################################ tabulator #####################################
 Library tabulator
   Path: src/tabulator
   Modules: StkTabulator
-  BuildDepends: domain, batteries (= 2.7.0)
+  BuildDepends: domain, batteries (>= 2.7.0)
 
 Executable test_tabulator
   Path: test/tabulator
@@ -106,7 +106,7 @@ Test test_tabulator
 Library service
   Path: src/service
   Modules: StkService
-  BuildDepends: domain, db, domain_db, batteries (= 2.7.0)
+  BuildDepends: domain, db, domain_db, batteries (>= 2.7.0)
 
 Executable test_service
   Path: test/service
@@ -126,7 +126,7 @@ Test test_service
 Library stockman_lib
   Path: src
   Modules: Stockman, CmdLine
-  BuildDepends: db, tabulator, domain, domain_db, dsv, batteries (= 2.7.0)
+  BuildDepends: db, tabulator, domain, domain_db, dsv, batteries (>= 2.7.0)
 
 Executable test_stockman
   Path: test
@@ -148,4 +148,4 @@ Executable stockman
   MainIs: stockman.ml
   Install: false
   CompiledObject: best
-  BuildDepends: db, domain, domain_db, tabulator, dsv, batteries (= 2.7.0)
+  BuildDepends: db, domain, domain_db, tabulator, dsv, batteries (>= 2.7.0)
