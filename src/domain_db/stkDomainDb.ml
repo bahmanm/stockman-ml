@@ -9,3 +9,12 @@ module ProductDb = Db.Make(struct
     let id p = p.Product.name
     let validate p = Product.validate p
   end)
+
+(** Invoice database *)
+module InvoiceDb = Db.Make(struct
+    module Invoice = StkDomain.Invoice
+    type t = Invoice.invoice
+    type id_t = string
+    let id inv = inv.Invoice.doc_no
+    let validate inv = Invoice.validate inv
+  end)
