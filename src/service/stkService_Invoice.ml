@@ -7,4 +7,5 @@ module Invoice = StkDomain.Product
 
 (** [save inv db] saves [inv] into [db]. In case an invoice already exists
     with the same `id`, it will combine the lines. *)
-let save inv db = db
+let save inv db =
+  InvoiceDb.save inv db
