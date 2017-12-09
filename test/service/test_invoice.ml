@@ -41,7 +41,7 @@ module Compare = struct
     assert_equal (l1.I.product) (l2.I.product);
     assert_equal (l1.I.qty) (l2.I.qty);
     assert_equal (l1.I.price) (l2.I.price)
-  
+
   let invoice inv1 inv2 ctx =
     assert_equal (inv1.I.doc_no) (inv2.I.doc_no);
     assert_equal (inv1.I.vendor) (inv2.I.vendor);
@@ -60,62 +60,94 @@ module Compare = struct
 end
 
 (************************)
-let test_new_invoice ctx =
-  let inv = {
-    I.doc_no = "I1";
-    date = "2017/12/01";
-    vendor = "VENDOR1";
-    amt = 50.;
-    lines = [Fixtures.line0]
-  } in
-  let db = (S.save inv IDb.empty) in
-  match IDb.get "I1" db with
-  | None -> assert false
-  | Some i -> Compare.invoice i inv ctx
+module Save = struct
+  
+  (************************)
+  let new_invoice ctx =
+    let inv = {
+      I.doc_no = "I1";
+      date = "2017/12/01";
+      vendor = "VENDOR1";
+      amt = 50.;
+      lines = [Fixtures.line0]
+    } in
+    let db = (S.save inv IDb.empty) in
+    match IDb.get "I1" db with
+    | None -> assert false
+    | Some i -> Compare.invoice i inv ctx
+
+  (************************)
+  let only_new_lines_are_saved ctx =
+    let inv_0 = {
+      I.doc_no = "I1"; date = "2017/12/01";
+      vendor = "VENDOR1"; amt = 50.;
+      lines = [Fixtures.line0]
+    } in
+    let db_0 = (IDb.empty |> S.save inv_0) in
+    let inv_1 = {
+      inv_0 with
+      I.lines = [Fixtures.line0; Fixtures.line1];
+      I.amt = 56.0
+    } in
+    let db_1 = (db_0 |> S.save inv_1) in
+    match (IDb.get "I1" db_1) with
+    | None -> assert false
+    | Some i -> Compare.invoice i inv_1 ctx
+
+  (************************)
+  let existing_lines_are_not_deleted ctx =
+    let inv_0 = {
+      I.doc_no = "I1"; date = "2017/12/01";
+      vendor = "VENDOR1"; amt = 50.;
+      lines = [Fixtures.line0]
+    } in
+    let db_0 = (IDb.empty |> S.save inv_0) in
+    let inv_1 = {
+      I.doc_no = inv_0.I.doc_no; date = inv_0.I.date;
+      vendor = inv_0.I.vendor; amt = 56.;
+      lines = [Fixtures.line1]
+    } in
+    let db_1 = (db_0 |> S.save inv_1) in
+    let expected = {
+      inv_1 with
+      I.lines = [Fixtures.line0; Fixtures.line1]
+    } in
+    match (IDb.get "I1" db_1) with
+    | None -> assert false
+    | Some i -> Compare.invoice i expected ctx
+
+  (************************)
+  let amt_is_automatically_adjusted ctx =
+    let inv_0 = {
+      I.doc_no = "I1"; date = "2017/12/01";
+      vendor = "VENDOR1"; amt = 50.;
+      lines = [Fixtures.line0]
+    } in
+    let db_0 = (IDb.empty |> S.save inv_0) in
+    let inv_1 = {
+      I.doc_no = inv_0.I.doc_no; date = inv_0.I.date;
+      vendor = inv_0.I.vendor; amt = 6.;
+      lines = [Fixtures.line1]
+    } in
+    let db_1 = (db_0 |> S.save inv_1) in
+    let expected = {
+      inv_1 with
+      I.amt = (inv_0.I.amt +. inv_1.I.amt);
+      lines = [Fixtures.line0; Fixtures.line1]
+    } in
+    match (IDb.get "I1" db_1) with
+    | None -> assert false
+    | Some i -> Compare.invoice i expected ctx
+end
 
 (************************)
-let test_existing_invoice_new_line ctx =
-  let inv_0 = {
-    I.doc_no = "I1"; date = "2017/12/01";
-    vendor = "VENDOR1"; amt = 50.;
-    lines = [Fixtures.line0]
-  } in
-  let db_0 = (IDb.empty |> S.save inv_0) in
-  let inv_1 = {
-    inv_0 with
-    I.lines = [Fixtures.line0; Fixtures.line1];
-    I.amt = 56.0
-  } in
-  let db_1 = (db_0 |> S.save inv_1) in
-  match (IDb.get "I1" db_1) with
-  | None -> assert false
-  | Some i -> Compare.invoice i inv_1 ctx
-
-(************************)
-let test_existing_invoice_new_single_line ctx =
-  let inv_0 = {
-    I.doc_no = "I1"; date = "2017/12/01";
-    vendor = "VENDOR1"; amt = 50.;
-    lines = [Fixtures.line0]
-  } in
-  let db_0 = (IDb.empty |> S.save inv_0) in
-  let inv_1 = {
-    I.doc_no = inv_0.I.doc_no; date = inv_0.I.date;
-    vendor = inv_0.I.vendor; amt = 56.;
-    lines = [Fixtures.line1]
-  } in
-  let db_1 = (db_0 |> S.save inv_1) in
-  let expected = {
-    inv_1 with
-    I.lines = [Fixtures.line0; Fixtures.line1]
-  } in
-  match (IDb.get "I1" db_1) with
-  | None -> assert false
-  | Some i -> Compare.invoice i expected ctx
-
-(************************)
-let suite_invoice =
-  "suite_invoice">:::
-  ["test_new_invoice">:: test_new_invoice;
-   "test_existing_invoice_new_line">:: test_existing_invoice_new_line;
-   "test_existing_invoice_new_single_line">:: test_existing_invoice_new_single_line]
+let suite_save =
+  "save">:::
+  ["new invoice"
+   >:: Save.new_invoice;
+   "existing lines are not deleted"
+   >:: Save.existing_lines_are_not_deleted;
+   "only new lines are saved"
+   >:: Save.only_new_lines_are_saved;
+   "amt is automically adjusted"
+   >:: Save.amt_is_automatically_adjusted]
