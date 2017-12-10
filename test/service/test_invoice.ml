@@ -7,7 +7,7 @@ module IDb = StkDomainDb.InvoiceDb
 module S = StkService.Invoice
 
 let name = "test_invoice."
-  
+
 (**********************************************************)
 module Fixtures = struct
   let line0 = {
@@ -64,8 +64,8 @@ end
 (**********************************************************)
 module Save = struct
   let name = name ^ "save"
-             
-  (************************)             
+
+  (************************)
   let new_invoice ctx =
     let inv = {
       I.doc_no = "I1";
