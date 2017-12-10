@@ -39,7 +39,7 @@ module Product_of_string = struct
     | _ -> assert_equal 0 1
 
   let suite =
-    "product_of_string" >:::
+    name >:::
     ["test_valid_input"
      >:: test_valid_input;
      "test_invalid_input"
@@ -48,7 +48,9 @@ end
 
 (**********************************************************)
 module Load_file = struct
+  let name = name ^ "load_file"
 
+  (************************)
   let test_valid_input ctx =
     let records = Dsv.load_file {
         Params.path="res/products__all-valid.csv";
@@ -75,8 +77,9 @@ module Load_file = struct
       } in
     assert_equal true (Enum.is_empty records2)
 
+  (************************)
   let suite =
-    "load_file" >:::
+    name >:::
     ["valid input"
      >:: test_valid_input;
      "invalid input"
