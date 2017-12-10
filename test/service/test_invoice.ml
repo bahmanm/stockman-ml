@@ -6,6 +6,8 @@ module I = StkDomain.Invoice
 module IDb = StkDomainDb.InvoiceDb
 module S = StkService.Invoice
 
+let name = "test_invoice."
+  
 (**********************************************************)
 module Fixtures = struct
   let line0 = {
@@ -59,10 +61,11 @@ module Compare = struct
       lines1 lines2
 end
 
-(************************)
+(**********************************************************)
 module Save = struct
-  
-  (************************)
+  let name = name ^ "save"
+             
+  (************************)             
   let new_invoice ctx =
     let inv = {
       I.doc_no = "I1";
@@ -138,16 +141,15 @@ module Save = struct
     match (IDb.get "I1" db_1) with
     | None -> assert false
     | Some i -> Compare.invoice i expected ctx
-end
 
-(************************)
-let suite_save =
-  "save">:::
-  ["new invoice"
-   >:: Save.new_invoice;
-   "existing lines are not deleted"
-   >:: Save.existing_lines_are_not_deleted;
-   "only new lines are saved"
-   >:: Save.only_new_lines_are_saved;
-   "amt is automically adjusted"
-   >:: Save.amt_is_automatically_adjusted]
+  let suite =
+    name>:::
+    ["new invoice"
+     >:: new_invoice;
+     "existing lines are not deleted"
+     >:: existing_lines_are_not_deleted;
+     "only new lines are saved"
+     >:: only_new_lines_are_saved;
+     "amt is automically adjusted"
+     >:: amt_is_automatically_adjusted]
+end
