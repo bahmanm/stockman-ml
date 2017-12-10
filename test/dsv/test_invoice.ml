@@ -9,6 +9,6 @@ module Dsv = StkDsv.Invoice
 module Invoice_of_string = struct
   let test_empty_string =
     match (Dsv.invoice_of_string ',' "") with
-    | OK _ -> assert false
+    | Ok _ -> assert false
     | Bad s -> assert false
 end
