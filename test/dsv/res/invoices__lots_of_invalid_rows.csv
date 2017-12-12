@@ -1,0 +1,21 @@
+DATE,LINE,DOCNO,PRODUCT,VENDOR,PRICE,QTY,TOTAL
+# invalid row below (date)
+2017/0312,1,PI-200,  P-100,V3,14.35,20,287.00
+2017/03/12,3,PI-200,P-300  ,V3,13.25,120,1590.00
+  2017/12/01,2,PI-910,P-200,V2,25.38,43,1091.34
+# invalid row below (missing fields)
+2017/05/23  ,2,PI-621,
+2017/05/23,3,PI-621,P-300,V2,13.30,90,1197.00
+# invalid row below (total)
+2017/01/01, 1,PI-900,P-100,V1,11.00,12,-132.00
+2017/01/01,3,PI-900,P-245,V1,41.30,2,  82.60
+# invalid row below (price)
+2017/03/12,2,PI-200,P-200,V3,2A4.00,12,288.00
+# invalid row below (product)
+2017/05/23,4,PI-621,,V2,6.70,75,502.50
+2017/12/01,1,PI-910,P-100,V2,  9.50   ,5,47.50
+# invalid row below (date)
+/05/23,1,PI-621,P-100,V2,1.15,24,27.60
+# invalid row below (qty)
+2017/01/01,2,PI-900,P-600,V1,3.45,90,-310.50
+# this is another comment
