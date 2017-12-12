@@ -110,20 +110,40 @@ end
 (**********************************************************)
 module Load_file = struct
   let name = name ^ "load_file"
+  module Params = StkDsv_Params
 
   (************************)
   let test_valid_input ctx =
-    assert false
+    let records = Dsv.load_file {
+        Params.path="res/invoices__all-valid.csv";
+        Params.comment_str="#";
+        Params.delimiter=',';
+        Params.n_header=1
+      } in
+    assert_equal 12 (Enum.count records)
 
   (************************)
   let test_invalid_input ctx =
-    assert false
+    let records1 = Dsv.load_file {
+        Params.path="res/invoices__lots-of-invalid-rows.csv";
+        Params.comment_str="#";
+        Params.delimiter=';';
+        Params.n_header=1
+      } in
+    assert_equal 7 (Enum.count records1);
+    let records2 = Dsv.load_file {
+        Params.path="res/invoices__all-invalid.csv";
+        Params.comment_str="#";
+        Params.delimiter='~';
+        Params.n_header=1
+      } in
+    assert_equal true (Enum.is_empty records2)
 
   (************************)
   let suite =
     name >:::
     ["valid input"
      >:: test_valid_input;
-     "invalid_input"
+     "invalid input"
      >:: test_invalid_input]
 end
