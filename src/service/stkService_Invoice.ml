@@ -1,10 +1,12 @@
 (* Author: Bahman Movaqar <Bahman@BahmanM.com> *)
-(** Purchase Invoice service. *)
 open Batteries
 
 module IDb = StkDomainDb.InvoiceDb
 module I = StkDomain.Invoice
 
+type save_error = HeaderMismatch | LineMismatch
+
+(*******************************************************************************)
 module Utils = struct
   let combine_lines inv1 inv2 =
     let lines1 = inv1.I.lines in
@@ -26,15 +28,12 @@ module Utils = struct
       lines
 end
 
-(** [save inv db] saves [inv] into [db]. In case an invoice already exists
-    with the same `id`, it will combine the lines. *)
+(*******************************************************************************)
 let save inv db =
   match (db |> IDb.get inv.I.doc_no) with
-  | None -> IDb.save inv db
+  | None -> Ok (db |> IDb.save inv)
   | Some inv_db -> begin
       let lines = Utils.combine_lines inv inv_db in
       let amt = Utils.calc_amt lines in
-      IDb.save
-        { inv with I.amt = amt; I.lines = lines }
-        db
+      Ok (db |> IDb.save { inv with I.amt = amt; I.lines = lines })
     end

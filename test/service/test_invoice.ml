@@ -6,10 +6,29 @@ module I = StkDomain.Invoice
 module IDb = StkDomainDb.InvoiceDb
 module S = StkService.Invoice
 
+let pass = assert true
+let fail = assert false
 let name = "test_invoice."
 
 (**********************************************************)
 module Fixtures = struct
+  let hdr0 = {
+    I.date = "2017/01/01";
+    I.doc_no = "I1";
+    I.vendor = "V1";
+    I.amt = 100.00;
+    lines = []
+  }
+  let hdr0_1 = {
+    hdr0 with I.date = "2017/01/02"
+  }
+  let hdr0_2 = {
+    hdr0 with I.vendor = "V2"
+  }
+  let hdr0_3 = {
+    hdr0 with I.amt = 110.00
+  }
+
   let line0 = {
     I.line_no = 1;
     product = "P1";
@@ -74,10 +93,13 @@ module Save = struct
       amt = 50.;
       lines = [Fixtures.line0]
     } in
-    let db = (S.save inv IDb.empty) in
-    match IDb.get "I1" db with
-    | None -> assert false
-    | Some i -> Compare.invoice i inv ctx
+    match (S.save inv IDb.empty) with
+    | Ok db -> begin
+        match IDb.get "I1" db with
+        | Some i -> Compare.invoice i inv ctx
+        | _ -> fail
+      end
+    | _ -> fail
 
   (************************)
   let only_new_lines_are_saved ctx =
@@ -86,16 +108,22 @@ module Save = struct
       vendor = "VENDOR1"; amt = 50.;
       lines = [Fixtures.line0]
     } in
-    let db_0 = (IDb.empty |> S.save inv_0) in
-    let inv_1 = {
-      inv_0 with
-      I.lines = [Fixtures.line0; Fixtures.line1];
-      I.amt = 56.0
-    } in
-    let db_1 = (db_0 |> S.save inv_1) in
-    match (IDb.get "I1" db_1) with
-    | None -> assert false
-    | Some i -> Compare.invoice i inv_1 ctx
+    match (IDb.empty |> S.save inv_0) with
+    | Ok db -> begin
+        let inv_1 = {
+          inv_0 with
+          I.lines = [Fixtures.line0; Fixtures.line1];
+          I.amt = 56.0
+        } in
+        match (db |> S.save inv_1) with
+        | Ok db -> begin
+            match (IDb.get "I1" db) with
+            | Some i -> Compare.invoice i inv_1 ctx
+            | _ -> fail
+          end
+        | _ -> fail
+      end
+    | _ -> fail
 
   (************************)
   let existing_lines_are_not_deleted ctx =
@@ -104,20 +132,27 @@ module Save = struct
       vendor = "VENDOR1"; amt = 50.;
       lines = [Fixtures.line0]
     } in
-    let db_0 = (IDb.empty |> S.save inv_0) in
-    let inv_1 = {
-      I.doc_no = inv_0.I.doc_no; date = inv_0.I.date;
-      vendor = inv_0.I.vendor; amt = 56.;
-      lines = [Fixtures.line1]
-    } in
-    let db_1 = (db_0 |> S.save inv_1) in
-    let expected = {
-      inv_1 with
-      I.lines = [Fixtures.line0; Fixtures.line1]
-    } in
-    match (IDb.get "I1" db_1) with
-    | None -> assert false
-    | Some i -> Compare.invoice i expected ctx
+    match (IDb.empty |> S.save inv_0) with
+    | Ok db -> begin
+        let inv_1 = {
+          I.doc_no = inv_0.I.doc_no; date = inv_0.I.date;
+          vendor = inv_0.I.vendor; amt = 56.;
+          lines = [Fixtures.line1]
+        } in
+        match (db |> S.save inv_1) with
+        | Ok db -> begin
+            let expected = {
+              inv_1 with
+              I.lines = [Fixtures.line0; Fixtures.line1]
+            } in
+            match (db |> IDb.get "I1") with
+            | Some i -> Compare.invoice i expected ctx
+            | None -> fail
+          end
+        | _ -> fail
+      end
+    | _ -> fail
+
 
   (************************)
   let amt_is_automatically_adjusted ctx =
@@ -126,21 +161,48 @@ module Save = struct
       vendor = "VENDOR1"; amt = 50.;
       lines = [Fixtures.line0]
     } in
-    let db_0 = (IDb.empty |> S.save inv_0) in
-    let inv_1 = {
-      I.doc_no = inv_0.I.doc_no; date = inv_0.I.date;
-      vendor = inv_0.I.vendor; amt = 6.;
-      lines = [Fixtures.line1]
-    } in
-    let db_1 = (db_0 |> S.save inv_1) in
-    let expected = {
-      inv_1 with
-      I.amt = (inv_0.I.amt +. inv_1.I.amt);
-      lines = [Fixtures.line0; Fixtures.line1]
-    } in
-    match (IDb.get "I1" db_1) with
-    | None -> assert false
-    | Some i -> Compare.invoice i expected ctx
+    match (IDb.empty |> S.save inv_0) with
+    | Ok db ->
+      begin
+        let inv_1 = {
+          I.doc_no = inv_0.I.doc_no; date = inv_0.I.date;
+          vendor = inv_0.I.vendor; amt = 6.;
+          lines = [Fixtures.line1]
+        } in
+        match (db |> S.save inv_1) with
+        | Ok db ->
+          begin
+            let expected = {
+              inv_1 with
+              I.amt = (inv_0.I.amt +. inv_1.I.amt);
+              lines = [Fixtures.line0; Fixtures.line1]
+            } in
+            match (IDb.get "I1" db) with
+            | Some i -> Compare.invoice i expected ctx
+            | None -> fail
+          end
+        | _ -> fail
+      end
+    | _ -> fail
+
+  (************************)
+  let hdrs_not_match ctx =
+    let module F = Fixtures in
+    let inv_0 = { F.hdr0 with I.lines = [F.line0] } in
+    match (IDb.empty |> S.save inv_0) with
+    | Ok db ->
+      begin
+        (match (db |> S.save { F.hdr0_1 with I.lines = [F.line1] }) with
+         | Bad S.HeaderMismatch -> pass
+         | _ -> fail);
+        (match (db |> S.save { F.hdr0_2 with I.lines = [F.line1] }) with
+         | Bad S.HeaderMismatch -> pass
+         | _ -> fail);
+        (match (db |> S.save { F.hdr0_3 with I.lines = [F.line1] }) with
+         | Bad S.HeaderMismatch -> pass
+         | _ -> fail);
+      end
+    | _ -> fail
 
   let suite =
     name>:::
@@ -151,5 +213,7 @@ module Save = struct
      "only new lines are saved"
      >:: only_new_lines_are_saved;
      "amt is automically adjusted"
-     >:: amt_is_automatically_adjusted]
+     >:: amt_is_automatically_adjusted;
+     "skip if headers don't match"
+     >:: hdrs_not_match]
 end
