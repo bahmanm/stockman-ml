@@ -2,6 +2,8 @@
 open OUnit2
 open Batteries
 
+let pass = assert true
+let fail = assert false
 let name = "test_invoice."
 module Invoice = StkDomain.Invoice
 
